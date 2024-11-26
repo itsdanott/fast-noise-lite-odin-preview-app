@@ -23,8 +23,8 @@ imgui_init :: proc(s : ^App_State) -> bool {
     style.Colors[imgui.Col.WindowBg].w = 1
     imgui.StyleColorsDark()
 
-    if !imgui_impl_glfw.InitForOpenGL(glfw_window, true) do return false
-    if !imgui_impl_opengl3.Init("#version 150") do return false
+    imgui_impl_glfw.InitForOpenGL(glfw_window, true) or_return
+    imgui_impl_opengl3.Init("#version 150") or_return
 
     return true
 }
