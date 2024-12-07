@@ -12,26 +12,26 @@ GL_VERSION_MINOR : i32 : 1
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // window - globals
-glfw_window : glfw.WindowHandle
-framebuffer_size_x,framebuffer_size_y : i32
-framebuffer_aspect : f32
+glfw_window: glfw.WindowHandle
+framebuffer_size_x, framebuffer_size_y: i32
+framebuffer_aspect: f32
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // window - types
 Window_State :: struct {
-    close_requested : bool,
+    close_requested: bool,
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // window - procs
 @(private="file")
-glfw_error :: proc "c" (error : i32, description : cstring) {
+glfw_error :: proc "c" (error: i32, description: cstring) {
     context = runtime.default_context()
     fmt.println("glfw_error:", error, "description:", description)
 }
 
 @(private="file")
-glfw_framebuffer_size_callback :: proc "c" (window: glfw.WindowHandle, width, height : i32) {
+glfw_framebuffer_size_callback :: proc "c" (window: glfw.WindowHandle, width, height: i32) {
     framebuffer_size_x = width
     framebuffer_size_y = height
 
@@ -90,7 +90,7 @@ window_clear :: proc() {
     gl.Clear(gl.COLOR_BUFFER_BIT)
 }
 
-window_poll_events :: proc(s : ^App_State) {
+window_poll_events :: proc(s: ^App_State) {
     s.window.close_requested = bool(glfw.WindowShouldClose(glfw_window))
     glfw.PollEvents()
 }

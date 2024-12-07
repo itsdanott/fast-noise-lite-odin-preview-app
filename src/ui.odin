@@ -5,7 +5,6 @@ import "core:time"
 import gl "vendor:OpenGL"
 import fnl "shared:fast_noise_lite"
 import "shared:imgui"
-import "core:fmt"
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // fast_noise_lite_ui - constants
@@ -59,19 +58,9 @@ ui_init :: proc (s: ^App_State) {
         preview_domain_warp = false,
         preview_auto_size = false,
     }
-
-    //TODO: cleanup
-    //not required as we are using const cstr names now
-    // noise_type_names := reflect.enum_field_names(fnl.Noise_Type)
-    // s.ui.noise_type_count = i32(len(noise_type_names))
-    // s.ui.noise_type_names = make([]cstring, s.ui.noise_type_count)
-    // for str, i in noise_type_names do s.ui.noise_type_names[i] = strings.clone_to_cstring(str)
 }
 
 ui_cleanup :: proc (s: ^App_State) {
-    //TODO: cleanup
-    // for cstr in s.ui.noise_type_names do delete(cstr)
-    // delete(s.ui.noise_type_names)
     delete(s.ui.preview_pixel_array)
 }
 
@@ -350,7 +339,7 @@ update_texture :: proc (new_preview: bool, s: ^App_State) {
     index := noise_tex_size_gen_x * preview_pixel_y * 4
     scale := 255 / (noise_tex_max - noise_tex_min)
 
-    timer : time.Stopwatch
+    timer: time.Stopwatch
     time.stopwatch_start(&timer)
 
     for y:= preview_pixel_y; y < noise_tex_size_gen_y; y+=1 {
@@ -414,6 +403,4 @@ update_texture :: proc (new_preview: bool, s: ^App_State) {
 
     // Upload pixels into texture
     gl.TexImage2D(gl.TEXTURE_2D, 0, gl.RGBA, noise_tex_size_gen_x, noise_tex_size_gen_y, 0, gl.RGBA, gl.UNSIGNED_BYTE, &preview_pixel_array[0])
-
-    fmt.printfln("Finish gl tex")
 }

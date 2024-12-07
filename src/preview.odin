@@ -1,9 +1,11 @@
 package fast_noise_lite_preview_app
 
+import fnl "shared:fast_noise_lite"
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // fast_noise_lite - types
 Preview_State :: struct {
-    preview_3d : bool,
+    preview_3d: bool,
 
     noise_type: i32,
     rotation_type: i32,
@@ -66,4 +68,10 @@ preview_make :: proc() -> Preview_State {
         domain_warp_fractal_lacunarity = 2.0,
         domain_warp_fractal_gain = 0.5,
     }
+}
+
+preview_init :: proc(s: ^App_State) {
+    s.preview = preview_make()
+    s.fnl = fnl.create_state()
+    s.fnl_warp = fnl.create_state()
 }

@@ -12,7 +12,7 @@ Imgui_State :: struct {
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // imgui - procs
-imgui_init :: proc(s : ^App_State) -> bool {
+imgui_init :: proc(s: ^App_State) -> bool {
     imgui.CHECKVERSION()
     imgui.CreateContext()
     s.imgui.io = imgui.GetIO()
@@ -29,7 +29,7 @@ imgui_init :: proc(s : ^App_State) -> bool {
     return true
 }
 
-imgui_cleanup :: proc(s : ^App_State) {
+imgui_cleanup :: proc(s: ^App_State) {
     imgui_impl_opengl3.Shutdown()
     imgui_impl_glfw.Shutdown()
     imgui.DestroyContext()
