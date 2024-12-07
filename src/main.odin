@@ -2,6 +2,7 @@ package fast_noise_lite_preview_app
 
 import "core:fmt"
 import "core:mem"
+import fnl "shared:fast_noise_lite"
 
 main :: proc() {
     // Tracking Allocator  /////////////////////////////////////////////////////////////////////////////////////////////
@@ -36,6 +37,13 @@ main :: proc() {
     if !imgui_init(&s) do return
     defer imgui_cleanup(&s)
 
+    s.preview = preview_make()
+    s.fnl = fnl.create_state()
+    s.fnl_warp = fnl.create_state()
+
+    ui_init(&s)
+    defer ui_cleanup(&s)
+
     // Main Loop ///////////////////////////////////////////////////////////////////////////////////////////////////////
     
     for !s.window.close_requested {
@@ -43,6 +51,7 @@ main :: proc() {
         window_poll_events(&s)
 
         imgui_new_frame()
+        ui_draw(&s)
         imgui_render()
 
         window_swap()
