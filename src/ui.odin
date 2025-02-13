@@ -37,7 +37,7 @@ UI_State :: struct {
     preview_mean_final: f32,
     preview_trigger_save: bool,
     preview_pixel_y: i32, 
-    preview_pixel_array: [dynamic]u8,
+    preview_pixel_array: []u8,
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -104,7 +104,7 @@ ui_draw :: proc (s: ^App_State) {
         imgui.EndDisabled()
 
         if imgui.DragInt("Seed", &seed) {
-            s.fnl.seed = int(seed)
+            s.fnl.seed = seed
             tex_update = true
         }
         if imgui.DragFloat("Frequency", &frequency, 0.0002) {
@@ -122,7 +122,7 @@ ui_draw :: proc (s: ^App_State) {
 
         imgui.BeginDisabled(fractal_type == 0)
         if (imgui.DragInt("Octaves", &fractal_octaves, 0.1, 1, 20)) {
-            s.fnl.octaves = int(fractal_octaves)
+            s.fnl.octaves = fractal_octaves
             tex_update = true
         }
         if imgui.DragFloat("Lacunarity", &fractal_lacunarity, 0.01) {
@@ -183,7 +183,7 @@ ui_draw :: proc (s: ^App_State) {
             tex_update = true
         }
         if imgui.DragInt("Seed", &domain_warp_seed) {
-            s.fnl_warp.seed = int(domain_warp_seed)
+            s.fnl_warp.seed = domain_warp_seed
             tex_update = true
         }
         if imgui.DragFloat("Frequency", &domain_warp_frequency, 0.001) {
@@ -201,7 +201,7 @@ ui_draw :: proc (s: ^App_State) {
         }
         imgui.BeginDisabled(domain_warp_fractal_type == 0)
         if imgui.DragInt("Octaves", &domain_warp_fractal_octaves, 0.1, 1, 20) {
-            s.fnl_warp.octaves = int(domain_warp_fractal_octaves)
+            s.fnl_warp.octaves = domain_warp_fractal_octaves
         }
         if imgui.DragFloat("Lacunarity", &domain_warp_fractal_lacunarity, 0.01) {
             s.fnl_warp.lacunarity = domain_warp_fractal_lacunarity
@@ -333,7 +333,7 @@ update_texture :: proc (new_preview: bool, s: ^App_State) {
         preview_min = math.F32_MAX
         preview_max = math.F32_MIN
         preview_mean = 0
-        preview_pixel_array = make([dynamic]u8, noise_tex_size_gen_x * noise_tex_size_gen_y * 4)
+        preview_pixel_array = make([]u8, noise_tex_size_gen_x * noise_tex_size_gen_y * 4)
     }
     
     index := noise_tex_size_gen_x * preview_pixel_y * 4
@@ -342,20 +342,20 @@ update_texture :: proc (new_preview: bool, s: ^App_State) {
     timer: time.Stopwatch
     time.stopwatch_start(&timer)
 
-    for y:= preview_pixel_y; y < noise_tex_size_gen_y; y+=1 {
+    for y := preview_pixel_y; y < noise_tex_size_gen_y; y+=1 {
         preview_pixel_y = y + 1
         for x:i32= 0; x < noise_tex_size_gen_x; x+=1 {
             noise: f32
-            posX := f32(x - noise_tex_size_gen_x / 2)
-            posY := f32(y - noise_tex_size_gen_y / 2)
+            posX := fnl.FNL_Float(x - noise_tex_size_gen_x / 2)
+            posY := fnl.FNL_Float(y - noise_tex_size_gen_y / 2)
 
             if preview_3d {
-                posZ := f32(preview_pos_z)
-                if s.preview.domain_warp_type > 0 do fnl.domain_warp_3d(&s.fnl_warp, &posX, &posY, &posZ)
-                noise = fnl.get_noise_3d(&s.fnl, posX, posY, posZ)
+                posZ := fnl.FNL_Float(preview_pos_z)
+                if s.preview.domain_warp_type > 0 do fnl.domain_warp_3d(s.fnl_warp, &posX, &posY, &posZ)
+                noise = fnl.get_noise_3d(s.fnl, posX, posY, posZ)
             } else {
-                if s.preview.domain_warp_type > 0 do fnl.domain_warp_2d(&s.fnl_warp, &posX, &posY)
-                noise = fnl.get_noise_2d(&s.fnl, posX, posY)
+                if s.preview.domain_warp_type > 0 do fnl.domain_warp_2d(s.fnl_warp, &posX, &posY)
+                noise = fnl.get_noise_2d(s.fnl, posX, posY)
             }
 
             c_noise := u8(math.max(0.0, math.min(255.0, (noise - noise_tex_min) * scale)))
