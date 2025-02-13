@@ -22,10 +22,8 @@ imgui_init :: proc(s: ^App_State) -> bool {
     style.WindowRounding = 0
     style.Colors[imgui.Col.WindowBg].w = 1
     imgui.StyleColorsDark()
-
     imgui_impl_glfw.InitForOpenGL(glfw_window, true) or_return
     imgui_impl_opengl3.Init("#version 150") or_return
-
     return true
 }
 

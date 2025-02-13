@@ -29,20 +29,15 @@ main :: proc() {
 
     // Initialization //////////////////////////////////////////////////////////////////////////////////////////////////
     s: App_State = {}
-
-    if !window_init() do return
+    if !window_init() do panic("Failed to init window")
     defer window_cleanup()
-
-    if !imgui_init(&s) do return
+    if !imgui_init(&s) do panic("Failed to init imgui")
     defer imgui_cleanup(&s)
-
     preview_init(&s)
-
     ui_init(&s)
     defer ui_cleanup(&s)
 
     // Main Loop ///////////////////////////////////////////////////////////////////////////////////////////////////////
-    
     for !s.window.close_requested {
         window_clear()
         window_poll_events(&s)
